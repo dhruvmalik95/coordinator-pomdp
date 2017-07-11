@@ -80,14 +80,15 @@ class Game:
         """
         return list(itertools.product(self.getAllWorldStates(), self.getAllTheta()))
 
-
-
     def getAllActions(self):
         """
         Returns all possible actions of the coordinator.
         """
-        decision_rules = list(itertools.product(self.getAllTheta(), self.getAllHumanActions()))
+        decision_rules = self.getAllDecisionRules()
         return list(itertools.product(decision_rules, self.getAllRobotActions()))
+
+    def getAllDecisionRules(self):
+        return list(itertools.product(self.getAllTheta(), self.getAllHumanActions()))
 
     def getAllRobotActions(self):
         """
@@ -101,8 +102,6 @@ class Game:
         Python list.
         """
         return self.human_policy.actions
-
-
 
 
     # def getAllActions(self):
