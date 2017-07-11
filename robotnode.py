@@ -1,15 +1,15 @@
-class RobotNode:
+class ActionNode:
 	def __init__(self, game, value, visited):
-		self.type = "robot"
+		self.type = "action"
 		self.game = game
-		self.observations = self.game.getAllObservations()
+		self.human_actions = self.game.getAllHumanActions()
 		self.children = self.make_children()
 		self.value = value
 		self.visited = visited
 
 	def make_children(self):
 		children = []
-		for action in self.observations:
+		for action in self.human_actions:
 			children.append("empty")
 
 		return children

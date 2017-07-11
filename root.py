@@ -31,10 +31,10 @@ class Root:
 		random_index = np.random.choice(range(0, len(self.belief)))
 		return self.belief[random_index]
 
-	def update_visited(self, theta):
+	def update_visited(self):
 		count = self.visited
 		count = count + 1
 		self.visited = count
 
-	def update_value(self, reward, theta):
+	def update_value(self, reward):
 		return

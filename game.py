@@ -33,23 +33,41 @@ class Game:
         self.world_state = initial_world_state
         self.theta_set = list(range(num_theta))
         self.allStates = self.getAllStates()
-        self.allObservations = self.getAllObservations()
+        #self.allObservations = self.getAllObservations()
 
     # Functions which describe the underlying dynamics of the game.
-    def getNextState(self, current_state, robot_action, human_action):
+    
+    def getNextState(self, current_state, coordinator_action):
         """
-        Returns the new state of the game after the robot (and possibly the
-        human) acts.
+        Returns the new state of the game after the coordinator acts.
 
         :param current_state: the current augmented state of the game.
-        :param robot_action: the robot's action.
-        :param human_action: the human's action.
+        :param coordinator_action: the coordinator's action.
         """
+        
         # if robot_action == human_action:
         #     return current_state
+        
+        robot_action = coordinator_action[1]
+        human_action = self.getHumanAction(current_state, coordinator_action)
         total_action = tuple(map(add, human_action, robot_action))
         state = (tuple(map(add, current_state[0], total_action)), current_state[1])
         return state
+
+    # def getNextState(self, current_state, robot_action, human_action):
+    #     """
+    #     Returns the new state of the game after the robot (and possibly the
+    #     human) acts.
+
+    #     :param current_state: the current augmented state of the game.
+    #     :param robot_action: the robot's action.
+    #     :param human_action: the human's action.
+    #     """
+    #     # if robot_action == human_action:
+    #     #     return current_state
+    #     total_action = tuple(map(add, human_action, robot_action))
+    #     state = (tuple(map(add, current_state[0], total_action)), current_state[1])
+    #     return state
 
     def getReward(self, state):
         """
@@ -82,13 +100,20 @@ class Game:
 
     def getAllActions(self):
         """
-        Returns all possible actions of the coordinator.
+        Returns all possible joint actions of the coordinator.
         """
         decision_rules = self.getAllDecisionRules()
         return list(itertools.product(decision_rules, self.getAllRobotActions()))
 
     def getAllDecisionRules(self):
-        return list(itertools.product(self.getAllTheta(), self.getAllHumanActions()))
+        """
+        Returns all possible decision rules that the coordinator could pick.
+        """
+
+        #check this shit lol?
+        thetas = self.getAllTheta()
+        human_actions = self.getAllHumanActions()
+        return [list(zip(thetas, item)) for item in itertools.product(human_actions, repeat=len(thetas))] 
 
     def getAllRobotActions(self):
         """
@@ -102,6 +127,19 @@ class Game:
         Python list.
         """
         return self.human_policy.actions
+
+    def getHumanAction(self, state, coordinator_action):
+        """
+        Returns the human action to be taken given a state and decision_rule.
+        :param state: used to get the theta as input to decision_rule
+        :param decision_rule: the decision rule needed to get the output human action
+        """
+        decision_rule = coordinator_action[0]
+        theta = state[1]
+        for item in decision_rule:
+            if item[0] == theta:
+                return item[1]
+
 
 
     # def getAllActions(self):
