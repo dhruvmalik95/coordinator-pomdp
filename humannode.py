@@ -1,5 +1,11 @@
 class HumanNode:
 	def __init__(self, game, reward):
+		"""
+		Initializes the HumanNode class, which is a node in the search tree storing the observation
+		(which is a human action).
+		:param game: the game we are trying to solve.
+		:param reward: the reward that was just received when the human action was taken.
+		"""
 		self.type = "human"
 		self.game = game
 		self.actions = self.game.getAllActions()
@@ -13,6 +19,9 @@ class HumanNode:
 		self.visited = 1
 
 	def make_children(self):
+		"""
+		Makes the children (robot actions) of the HumanNode.
+		"""
 		children = []
 		for action in self.actions:
 			children.append("empty")
@@ -20,6 +29,10 @@ class HumanNode:
 		return children
 
 	def optimal_action(self, c):
+		"""
+		Returns the optimal robot action to take from this search node.
+		:param c: the constant that controls how much exploration should be done.
+		"""
 		for i in range(0, len(self.children)):
 			if self.children[i] == "empty":
 				return self.actions[i]
@@ -31,11 +44,18 @@ class HumanNode:
 		return self.actions[values.index(max(values))]
 
 	def update_value(self, reward):
+		"""
+		Averages the reward with the current value of the search node and updates the value.
+		:param reward: the reward used to update the value
+		"""
 		val = self.value
 		val = val + ((reward - val)/self.visited)
 		self.value = val
 
 	def update_visited(self):
+		"""
+		Increments the visit count of the search node by 1.
+		"""
 		count = self.visited
 		count = count + 1
 		self.visited = count

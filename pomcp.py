@@ -29,6 +29,10 @@ class POMCP_Solver:
 		self.theta_list = self.game.getAllTheta()
 
 	def search(self):
+		"""
+		The search function as described in Silver et al. Samples a start state for self.timer iterations.
+		Prints optimal action and its value after iterations are complete.
+		"""
 		for _ in range(0, self.timer):
 			print(_)
 			# if _ % 100000 == 0:
@@ -66,10 +70,23 @@ class POMCP_Solver:
 		return
 
 	def random_sample(self, list_to_sample):
+		"""
+		Returns a random sample from input list.
+		:param list_to_sample: the input list to sample from.
+		"""
 		random_index = np.random.choice(range(0, len(list_to_sample)))
 		return list_to_sample[random_index]
 
 	def rollout_helper(self, state, coordinator_action, history, depth):
+		"""
+		Returns the value from performing a random rollout, and builds the nodes at the edge of the
+		search tree.
+		Makes a call to the self.rollout function to actually perform rollout.
+		:param state: the state that the rollout is performed from.
+		:param coordinator_action: the coordinator_action that we begin the rollout from.
+		:param history: the history we begin the rollout from and append nodes to.
+		:param depth: the depth in the search tree we are currently at.
+		"""
 		new_human_action = self.game.getHumanAction(state, coordinator_action)
 		value = self.rollout(state, coordinator_action, depth)
 
@@ -86,6 +103,13 @@ class POMCP_Solver:
 		return value
 
 	def rollout(self, state, coordinator_action, depth):
+		"""
+		Actually performs the rollout by randomly sampling coordinator actions.
+		Returns the value achieved from the rollout.
+		:param state: the state that the rollout is performed from.
+		:param coordinator_action: the coordinator_action that we begin the rollout from.
+		:param depth: the depth in the search tree we are currently at.
+		"""
 		if self.game.getReward(state):
 			return 1
 
@@ -99,6 +123,15 @@ class POMCP_Solver:
 		return self.gamma*self.rollout(next_state, next_coordinator_action, depth + 1)
 
 	def simulate(self, state, history, depth):
+		"""
+		The recursive Simulate function as described in Silver et al. Simulates the start state moving down
+		the search tree, by picking the optimal action at each point in the tree. Incrementally builds the
+		search tree and updates the values/visited counts of each search node it hits.
+		Returns the value achieved from passing the state down.
+		:param state: the starting state
+		:param history: the history we are currently at in the search tree
+		:param depth: the current depth we are at in the search tree
+		"""
 		if self.game.getReward(state):
 			history.update_visited()
 			history.update_value(1)
