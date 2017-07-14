@@ -7,15 +7,15 @@ from robotnode import *
 from pomcp import *
 import math
 
-num_theta = 5
+num_theta = 3
 #num_theta = 6
 horizon = 0
-num_ingredients = 9
+num_ingredients = 3
 #num_ingredients = 5
 
 robot_belief = [1/num_theta for i in range(num_theta)]
-reward_set = [((0,0,0,6,0,0,0,0,0),0), ((0,1,1,2,0,0,1,0,0),1), ((0,1,0,3,1,0,0,1,0),2), ((0,2,0,2,0,0,0,0,1),3), ((2,0,0,2,0,0,1,0,0),4)]
-initial_world_state = (0,0,0,0,0,0,0,0,0)
+reward_set = [((2,0,2),0), ((0,2,1),1), ((0,1,2),2)]
+initial_world_state = (0,0,0)
 human_behavior = "boltzmann"
 
 
@@ -23,11 +23,10 @@ humanPolicy = HumanPolicy(num_actions = num_ingredients + 1, behavior = human_be
 robot = Robot(robot_belief, num_actions = num_ingredients + 1)
 game = Game(robot, humanPolicy, initial_world_state, num_theta, num_ingredients, reward_set)
 
-initial_history = Root(game, [((0,0,0,0,0,0,0,0,0),0), ((0,0,0,0,0,0,0,0,0),1), 
-	((0,0,0,0,0,0,0,0,0),2), ((0,0,0,0,0,0,0,0,0),3), ((0,0,0,0,0,0,0,0,0),4)], 0)
+initial_history = Root(game, [((0,0,0),0), ((0,0,0),1), ((0,0,0),2)], 0)
 
 #make sure to change exploration accordingly - also what should the epsilon value be?
-epsilon = math.pow(0.95, 3)
+epsilon = math.pow(0.95, 2)
 
 # print("Required Horizon: 4")
 # print("Number Of Theta: 6")
