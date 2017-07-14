@@ -3,6 +3,7 @@ import math
 
 from humannode import *
 from robotnode import *
+from timeit import default_timer as timer
 
 class POMCP_Solver:
 	def __init__(self, gamma, epsilon, timer, history, game, c, beta):
@@ -24,24 +25,42 @@ class POMCP_Solver:
 		self.c = c
 		self.beta = beta
 		self.actions = self.game.getAllActions()
-		print(len(self.actions))
+		#print(len(self.actions))
 		self.human_actions = self.game.getAllHumanActions()
 		self.theta_list = self.game.getAllTheta()
+		self.data = []
 
 	def search(self):
 		"""
 		The search function as described in Silver et al. Samples a start state for self.timer iterations.
 		Prints optimal action and its value after iterations are complete.
 		"""
+		start_0 = timer()
+		start = start_0
 		for _ in range(0, self.timer):
-			print(_)
-			# if _ % 100000 == 0:
-			# 	print(_)
+			#print(_)
+			if _ % 100000 == 0:
+				print(_)
 			sample_state = self.history.sample_belief()
 			self.simulate(sample_state, self.history, 0)
+
+			# t = timer()
+			# if t - start > 0.05 and _ > 64:
+			# 	optimal_action = self.history.optimal_action(0)
+			# 	optimal_child = self.history.children[self.actions.index(optimal_action)]
+			# 	self.data.append((t-start_0, optimal_child.value))
+			# 	start = t
+
+			# if timer() - start_0 > 4*60:
+			# 	return
+
+			if _ > 64 and _%500 == 0:
+				optimal_action = self.history.optimal_action(0)
+				optimal_child = self.history.children[self.actions.index(optimal_action)]
+				self.data.append((_,optimal_child.value))
 			# if _ > 4:
-				# print(self.history.children[self.actions.index((0,0,1))].value)
-				# print(self.history.children[self.actions.index((0,0,1))].visited)
+			# 	print(self.history.children[self.actions.index((0,0,1))].value)
+			# 	print(self.history.children[self.actions.index((0,0,1))].visited)
 
 		optimal_action = self.history.optimal_action(0)
 		optimal_child = self.history.children[self.actions.index(optimal_action)]
@@ -67,7 +86,7 @@ class POMCP_Solver:
 		# 	print(t)
 		# 	print(" ")
 		# 	t = 0
-		return
+		return self.data
 
 	def random_sample(self, list_to_sample):
 		"""
