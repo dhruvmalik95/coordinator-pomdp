@@ -14,7 +14,7 @@ num_ingredients = 3
 #num_ingredients = 5
 
 robot_belief = [1/num_theta for i in range(num_theta)]
-reward_set = [((3,0,3),0), ((0,3,2),1), ((0,2,3),2)]
+reward_set = [((2,0,2),0), ((0,2,1),1), ((0,1,2),2)]
 initial_world_state = (0,0,0)
 human_behavior = "boltzmann"
 
@@ -26,7 +26,7 @@ game = Game(robot, humanPolicy, initial_world_state, num_theta, num_ingredients,
 initial_history = Root(game, [((0,0,0),0), ((0,0,0),1), ((0,0,0),2)], 0)
 
 #make sure to change exploration accordingly - also what should the epsilon value be?
-epsilon = math.pow(0.95, 3)
+epsilon = math.pow(0.95, 2)
 
 # print("Required Horizon: 4")
 # print("Number Of Theta: 6")
@@ -34,7 +34,7 @@ epsilon = math.pow(0.95, 3)
 
 for _ in range(0, 1):
 #KEEP THESE PARAMETERS FOR NOW!!
-	solver = POMCP_Solver(0.95, epsilon, 20000000, initial_history, game, 300, 5)
+	solver = POMCP_Solver(0.95, epsilon, 10000000, initial_history, game, 300, 5)
 	solver.search()
 	data = solver.data
 	f = open('data-coor-pomcp.txt', 'w')
