@@ -160,8 +160,8 @@ class POMCP_Solver:
 			return 0
 
 		optimal_action = history.optimal_action(self.c)
-		if optimal_action == ([(0, (0.0, 1.0, 0.0)), (1, (1.0, 0.0, 0.0))], (0.0, 0.0, 1.0)):
-			print("now")
+		# if optimal_action == ([(0, (0.0, 1.0, 0.0)), (1, (1.0, 0.0, 0.0))], (0.0, 0.0, 1.0)):
+		# 	print("now")
 		
 		if history.children[self.actions.index(optimal_action)] == "empty":
 			rollout_value = self.rollout_helper(state, optimal_action, history, depth)
